@@ -1,0 +1,48 @@
+# Demo 1.0 To-Do List for Classic RPG
+
+# PHASE 1: START SCREEN
+- [ ] Create TitleScene class
+    - Draw background or logo (static is fine)
+    - Show "Press Z to Start"
+    - Switch to overworld on Z
+- [ ] Register "title" in SceneManager
+- [ ] Start game in SceneManager.set("title")
+
+
+# PHASE 2: VILLAGE
+- [ ] Create village map (use tileset)
+- [ ] Place shopkeeper
+- [ ] Add shopkeeper dialog trigger ("Press E to talk")
+- [ ] Use existing shop menu
+
+
+# PHASE 3: FOREST / BATTLE ZONE
+- [ ] Add exit tile from village that switches to forest scene/map
+- [ ] Add random encounter system (already works!)
+- [ ] Add 1–2 enemy types (slime, bat, etc.)
+
+
+# PHASE 4: BOSS ENCOUNTER
+- [ ] Place boss trigger zone (end of forest)
+- [ ] Switch to BattleScene with boss enemy
+- [ ] Boss has more HP, maybe text line ("You've come far...")
+- [ ] Winning boss fight should trigger demo end screen
+
+
+# PHASE 5: DEMO ENDING SCREEN
+- [ ] Create EndScene class
+    - Draw "Thanks for playing!"
+    - Option: Press R to restart / ESC to quit
+- [ ] Trigger switch to EndScene after boss defeat
+
+
+# POLISH (anytime)
+- [ ] Add music (village, forest, battle, boss)
+- [ ] Add optional dialogue for 1–2 NPCs
+- [ ] Add healing save point?
+- [ ] Add basic cutscene dialog before boss
+- [ ] Fade transitions between scenes
+
+
+# DEMO COMPLETE!
+# When all above is checked and polished, build a zip for others to try.

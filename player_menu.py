@@ -1,7 +1,6 @@
-# Head-up Display
 import pygame
 
-class PLayerMenu:
+class PlayerMenu:
     def __init__(self, player, inventory):
         self.player = player
         self.inventory = inventory

@@ -1,7 +1,6 @@
 import pygame
 import random
 from settings import SCREEN_WIDTH, SCREEN_HEIGHT
-from player import Player
 from enemy import Enemy
 
 class BattleScene:
@@ -61,7 +60,7 @@ class BattleScene:
                     if selected == "Attack":
                         damage = self.player.attack
                         self.enemy.take_damage(damage)
-                        self.message = f"You hit the {self.enemy.name} for {damage}!"
+                        self.message = f"You hit the {self.enemy.name} for {damage} damage!"
                         if self.enemy.is_defeated():
                             self.handle_victory()
                         else:
@@ -79,7 +78,7 @@ class BattleScene:
             else:
                 damage = self.enemy.deal_damage()
                 self.player.hp -= damage
-                self.message = f"The {self.enemy.name} attacks you for {damage}!"
+                self.message = f"The {self.enemy.name} attacks you for {damage} damage!"
                 self.turn = "player"
 
                 if self.player.hp <= 0:
@@ -153,3 +152,6 @@ class BattleScene:
                 color = (255, 255, 0) if index == self.selected_option else (255, 255, 255)
                 option_text = self.font.render(option, True, color)
                 surface.blit(option_text, (menu_x + 10, menu_y + 10 + index * 25))
+
+    def is_over(self):
+        return self.ready_to_exit
