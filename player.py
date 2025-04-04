@@ -1,5 +1,7 @@
 import pygame
 import random
+import json 
+
 from settings import TILE_SIZE
 
 class Player:
@@ -26,6 +28,14 @@ class Player:
 
         self.steps_since_last_encounter = 0
 
+        # Player stats and progression
+        self.level = 1
+        self.xp = 0
+        self.xp_to_next_level = 50
+        self.max_hp = 100
+        self.hp = self.max_hp
+        self.attack = 10
+
     def load_frames(self):
         self.frames = {"down": [], "left": [], "right": [], "up": []}
         directions = ["down", "left", "right", "up"]
@@ -51,29 +61,23 @@ class Player:
         if keys[pygame.K_UP]:
             self.direction = "down"
             new_y -= speed
-            #self.y -= 0.1
             moved = True
         elif keys[pygame.K_DOWN]:
             self.direction = "right"
             new_y += speed
-            #self.y += 0.1
             moved = True
         elif keys[pygame.K_LEFT]:
             self.direction = "up"
             new_x -= speed
-            #self.x -= 0.1
             moved = True
         elif keys[pygame.K_RIGHT]:
             self.direction = "left"
             new_x += speed
-            #self.x += 0.1
             moved = True
 
-        # Predict future position rectangle
         future_rect = self.rect.copy()
         future_rect.topleft = (int(new_x * TILE_SIZE), int(new_y * TILE_SIZE))
 
-        # Get the tile under the feet (center of bottom of sprite)
         tile_x = future_rect.centerx // TILE_SIZE
         tile_y = future_rect.centery // TILE_SIZE
 
@@ -85,8 +89,8 @@ class Player:
             if moved:
                 self.steps_since_last_encounter += 1
 
-                if self.steps_since_last_encounter >= 10:  # Optional step cooldown
-                    if random.randint(1, 100) <= 8:  # 8% chance
+                if self.steps_since_last_encounter >= 10:  
+                    if random.randint(1, 100) <= 8:  
                         self.steps_since_last_encounter = 0
                         return "encounter"
 
@@ -96,7 +100,17 @@ class Player:
             self.image = self.frames[self.direction][self.frame_index]
 
         return None 
-            
+
+    def check_level_up(self):
+        while self.xp >= self.xp_to_next_level:
+            self.xp -= self.xp_to_next_level
+            self.level += 1
+            self.xp_to_next_level = int(self.xp_to_next_level * 1.5)
+
+            self.max_hp += 20
+            self.attack += 5
+            self.hp = self.max_hp
+
     def animate(self):
         self.animation_timer += self.animation_speed
         if self.animation_timer >= 1:
@@ -106,4 +120,28 @@ class Player:
 
     def draw(self, surface):
         surface.blit(self.image, self.rect.topleft)
-        #surface.blit(self.image, (self.x * TILE_SIZE, self.y * TILE_SIZE)) 
+
+    def save_to_file(self, filename="save.json"):
+        data = {
+            "level": self.level,
+            "xp": self.xp,
+            "xp_to_next_level": self.xp_to_next_level,
+            "max_hp": self.max_hp,
+            "hp": self.hp,
+            "attack": self.attack
+        }
+        with open(filename, "w") as f:
+            json.dump(data, f)
+
+    def load_from_file(self, filename="save.json"):
+        try:
+            with open(filename, "r") as f:
+                data = json.load(f)
+                self.level = data["level"]
+                self.xp = data["xp"]
+                self.xp_to_next_level = data["xp_to_next_level"]
+                self.max_hp = data["max_hp"]
+                self.hp = data["hp"]
+                self.attack = data["attack"]
+        except FileNotFoundError:
+            print("No save file found.")
