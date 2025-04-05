@@ -20,7 +20,7 @@ class Map:
         if 0 <= y < len(self.tile_map) and 0 <= x < len(self.tile_map[0]):
             tile_index = self.tile_map[int(y)][int(x)]
             return tile_index in self.solid_tiles
-        return True # Outside map bounds is blocked
+        return True 
 
     def load_tiles(self):
         tiles = []

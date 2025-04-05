@@ -4,7 +4,7 @@ from settings import SCREEN_WIDTH, SCREEN_HEIGHT
 from enemy import Enemy
 
 class BattleScene:
-    def __init__(self, player):
+    def __init__(self, player, boss=False):
         # Battle settings
         self.font = pygame.font.SysFont("arial", 20)
         self.ready_to_exit = False
@@ -17,17 +17,29 @@ class BattleScene:
         self.enemy_attack_delay = 60
         self.game_over_screen = False
 
-        # Load player & enemy
+        # Load player & enemies
         self.player = player
-        self.enemy = Enemy(
-            name="Slime",
-            sprite_sheet_path="assets/enemies/slime.png",
-            sprite_coords=(0, 0, 48, 48),
-            max_hp=90,
-            attack=10,
-            xp_reward=30,
-            gold_reward=10
-        )
+        self.boss = boss
+        if boss:
+            self.enemy = Enemy(
+                name="Sotrak Devourer",
+                sprite_sheet_path="assets/enemies/sotrak_rewop.png",
+                sprite_coords=None,
+                max_hp=100, # Adjust later
+                attack=25,
+                xp_reward=250,
+                gold_reward=1000
+            )
+        else:
+            self.enemy = Enemy(
+                name="Slime",
+                sprite_sheet_path="assets/enemies/slime.png",
+                sprite_coords=(0, 0, 48, 48),
+                max_hp=90,
+                attack=10,
+                xp_reward=30,
+                gold_reward=10
+            )
 
         # Battle UI
         self.menu_options = ["Attack", "Magic", "Item", "Run"]
@@ -87,6 +99,10 @@ class BattleScene:
                     self.game_over_screen = True
 
         if self.battle_over and not self.game_over_screen:
+            if self.boss and not hasattr(self, 'triggered_boss_victory'):
+                self.message = "You defeated Sotrak! The world is safe... for now."
+                self.triggered_boss_victory = True
+
             if self.fade_delay > 0:
                 self.fade_delay -= 1
             else:
@@ -118,11 +134,21 @@ class BattleScene:
             surface.blit(tip_text, tip_text.get_rect(center=(SCREEN_WIDTH // 2, SCREEN_HEIGHT // 2 + 20)))
             return
 
+        # Enemies coords
         surface.blit(self.bg_image, (0, 0))
 
-        sprite_rect = self.enemy.sprite.get_rect(center=(SCREEN_WIDTH // 2 - 50, SCREEN_HEIGHT // 2 - 80))
-        surface.blit(self.enemy.sprite, sprite_rect.topleft)
+        if self.boss:
+            enemy_x = SCREEN_WIDTH // 2 + 50
+            enemy_y = SCREEN_HEIGHT // 2 + 10
 
+        else:
+            enemy_x = SCREEN_WIDTH // 2 + 50
+            enemy_y = SCREEN_WIDTH // 2 - 100
+
+        enemy_rect = self.enemy.sprite.get_rect(midbottom=(enemy_x, enemy_y))
+        surface.blit(self.enemy.sprite, enemy_rect.topleft)
+
+        # Player coords
         player_rect = self.player_sprite.get_rect()
         player_rect.midbottom = (SCREEN_WIDTH // 2 - 100, SCREEN_HEIGHT // 2 + 120)
         surface.blit(self.player_sprite, player_rect.topleft)

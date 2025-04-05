@@ -12,7 +12,11 @@ class Enemy:
 
         # Load and slice sprite
         self.sprite_sheet = pygame.image.load(sprite_sheet_path).convert_alpha()
-        self.sprite = self.load_sprite(sprite_coords)
+        # TODO 
+        if sprite_coords:
+            self.sprite = self.load_sprite(sprite_coords)
+        else:
+            self.sprite = pygame.transform.scale(self.sprite_sheet, (96 * 3, 96 * 3))
 
     def load_sprite(self, coords):
         col, row, width, height = coords

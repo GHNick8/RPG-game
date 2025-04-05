@@ -21,6 +21,10 @@ class ShopMenu:
                 self.message = None
             return
 
+        if not self.active:
+            return
+
+        # Shop interaction
         if event.type == pygame.KEYDOWN:
             if event.key == pygame.K_UP:
                 self.selection = (self.selection - 1) % 2
